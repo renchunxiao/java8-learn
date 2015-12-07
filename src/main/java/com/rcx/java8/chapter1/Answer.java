@@ -3,6 +3,10 @@ package com.rcx.java8.chapter1;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -37,7 +41,7 @@ public class Answer {
 		}
 	}
 
-	@Test
+	// @Test
 	public void question3() {
 		File path = new File("/Users/renchunxiao/java8test");
 		String suffix = "txt";
@@ -57,5 +61,14 @@ public class Answer {
 		for (File file : files1) {
 			System.out.println(file.getAbsolutePath());
 		}
+	}
+
+	@Test
+	public void question4() {
+		File path = new File("/Users/renchunxiao/java8test");
+		List<String> strings = Stream.of(path.listFiles()).map(file -> file.getName())
+				.sorted((name1, name2) -> name1.length() - name2.length())
+				.collect(Collectors.toList());
+		strings.forEach(System.out::println);
 	}
 }
