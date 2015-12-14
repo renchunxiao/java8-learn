@@ -2,15 +2,21 @@ package com.rcx.java8.chapter2;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+
+import sun.launcher.resources.launcher;
 
 public class StreamAPITest {
 
@@ -90,7 +96,7 @@ public class StreamAPITest {
 
 	}
 
-	@Test
+	// @Test
 	public void getResult() {
 		Stream<String> stream = Stream.of("a", "b", "c", "da", "asdass");
 		String[] arr = stream.toArray(String[]::new);
@@ -100,6 +106,52 @@ public class StreamAPITest {
 		List<String> list = stream.collect(Collectors.toList());
 		String string = stream.collect(Collectors.joining());
 		String string1 = stream.collect(Collectors.joining(","));
+	}
+
+	// @Test
+	public void getResultToMap() {
+		Stream<String> stream = Stream.of("a", "b", "c", "da", "asdass");
+		Map<String, Integer> map = stream.collect(Collectors
+				.toMap(String::toString, String::length));
+		System.out.println(map);
+	}
+
+	// @Test
+	public void groupBy() {
+		Stream<Locale> stream = Stream.of(Locale.getAvailableLocales());
+		Map<String, List<Locale>> map = stream.collect(Collectors.groupingBy(Locale::getCountry));
+		Map<String, Set<Locale>> map2 = stream.collect(Collectors.groupingBy(Locale::getCountry,
+				Collectors.toSet()));
+		Map<String, Long> map3 = stream.collect(Collectors.groupingBy(Locale::getCountry,
+				Collectors.counting()));// 返回根据国家分组的语言个数的map
+		// Map<String, Long> map4 =
+		// citys.collect(Collectors.groupingBy(City::getState,
+		// Collectors.summingLong(City::getPopulation)));
+		// 模拟计算每个州下的城市人口数
+		// Map<String, City> map5 =
+		// citys.collect(Collectors.groupingBy(City::getState,
+		// Collectors.maxBy(Compartor.comparing(City::getPopulation))));
+		// 映射每个州人口最多的城市
+		Map<String, Set<String>> map6 = stream.collect(Collectors.groupingBy(
+				Locale::getDisplayCountry,
+				Collectors.mapping(Locale::getDisplayLanguage, Collectors.toSet())));
+
+		System.out.println(map);
+	}
+
+	@Test
+	public void baseStream() {
+		IntStream intStream = IntStream.of(1, 2, 3);
+		int[] values = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
+		IntStream intStream2 = Arrays.stream(values, 2, 5);
+		IntStream intStream3 = IntStream.range(0, 10);// 不包含上限
+		IntStream intStream4 = IntStream.rangeClosed(0, 10);// 包含上限
+
+		Stream<String> stream = Stream.of("a", "asd", "2s");
+		IntStream intStream5 = stream.mapToInt(String::length);
+		Stream<Integer> stream2 = intStream2.boxed();// 原生流转换成对象流
+
+		intStream2.forEach(System.out::println);
 	}
 
 	public static Stream<Character> characterStream(String string) {
